@@ -11,7 +11,7 @@ export const ClavaThemeContext = React.createContext({
 const ClavaThemeProvider = (props) => {
   // destructuring to store all children
   const { children } = props;
-  // getting the current theme name from browsers 'localStorage', default: 'light
+  // getting the current theme name from browsers 'localStorage', default: 'light'
   const currentTheme = localStorage.getItem("appTheme") || "light";
   // store the theme name in component state
   const [themeName, _setThemeName] = React.useState(currentTheme);
