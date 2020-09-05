@@ -9,6 +9,8 @@ import { v4 as uuidv4 } from "uuid";
 import { ClavaThemeContext } from "../../Theme/ClavaThemeProvider";
 // Style for Appbar
 import Waves from "../Svg/Waves";
+//
+import SideDrawer from "./Sidebar";
 // MUI Core Components
 import {
   makeStyles,
@@ -27,7 +29,6 @@ import {
 } from "@material-ui/core";
 
 // MUI Icons
-import MenuIcon from "@material-ui/icons/Menu";
 import AccountIcon from "@material-ui/icons/AccountCircle";
 import ProfileIcon from "@material-ui/icons/PersonSharp";
 import LogoutIcon from "@material-ui/icons/ExitToAppSharp";
@@ -36,9 +37,8 @@ import LightThemeIcon from "@material-ui/icons/Brightness7";
 import AboutIcon from "@material-ui/icons/InfoOutlined";
 import HomeIcon from "@material-ui/icons/Home";
 import GalleryIcon from "@material-ui/icons/PhotoSizeSelectActual";
-import MailIcon from "@material-ui/icons/Mail";
 import NotificationsIcon from "@material-ui/icons/Notifications";
-import MoreIcon from "@material-ui/icons/MoreVert";
+import MenuIcon from "@material-ui/icons/MoreVert";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 
 // JSS Styles Used
@@ -47,10 +47,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   menuSpacing: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    display: "block",
+    marginRight: theme.spacing(2.15),
   },
   sectionDesktop: {
     display: "none",
@@ -70,8 +67,8 @@ const useStyles = makeStyles((theme) => ({
     right: theme.spacing(2),
   },
   tab: {
-    minWidth: 60,
-    width: 60,
+    minWidth: 95,
+    width: 95,
   },
   mobileTab: {
     minWidth: 0,
@@ -139,8 +136,10 @@ export default function Navbar(props) {
   // Closes the profile Menu in Desktop view
   const handleProfileMenuClick = (url) => {
     setAnchor(false);
-    setValue(null);
-    if (url !== null) history.push(url);
+    if (url !== null) {
+      history.push(url);
+      setValue(null);
+    }
   };
 
   // Opens the profile Menu in Mobile view
@@ -179,10 +178,8 @@ export default function Navbar(props) {
 
   // All the Menu items for mobile
   const mobileMenuItems = [
-    { icon: <MailIcon />, tag: "Messages", href: "messages" },
-    { icon: <MailIcon />, tag: "sages", href: "sages" },
-    { icon: <MailIcon />, tag: "ages", href: "ages" },
-    { icon: <MailIcon />, tag: "Mess", href: "mess" },
+    { icon: <AboutIcon />, tag: "About" },
+    { icon: <ProfileIcon />, tag: "Profile" },
   ];
 
   // Profile Menu (Desktop)
@@ -221,32 +218,32 @@ export default function Navbar(props) {
       onClose={() => handleMobileMenuClick(null)}
     >
       {mobileMenuItems.map((item) => (
-        <MenuItem onClick={() => handleIconClick(item.href)}>
+        <MenuItem onClick={() => handleIconClick(item.tag)}>
           <IconButton
             disableRipple
             color='inherit'
-            onClick={() => handleIconClick(item.href)}
+            onClick={() => handleIconClick(item.tag)}
           >
             {item.icon}
           </IconButton>
           <p>{item.tag}</p>
         </MenuItem>
       ))}
+      <MenuItem>
+        <IconButton disableRipple color='inherit'>
+          <LogoutIcon />
+        </IconButton>
+        <p>Logout</p>
+      </MenuItem>
     </Menu>
   );
 
   return (
-    <div className={classes.grow}>
-      <AppBar position='static'>
-        <Toolbar id='back-to-top-anchor'>
-          <IconButton
-            edge='start'
-            className={classes.menuSpacing}
-            color='inherit'
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography className={classes.title} variant='h6' noWrap>
+    <div className={classes.grow} id='back-to-top-anchor'>
+      <AppBar elevation={0}>
+        <Toolbar disableGutters>
+          <SideDrawer handleIconClick={handleIconClick} />
+          <Typography variant='h3' noWrap>
             Clava
           </Typography>
           <div className={classes.grow} />
@@ -263,7 +260,7 @@ export default function Navbar(props) {
             >
               {DesktopTabs.map((item) => (
                 <Tab
-                  label={item.tag}
+                  label={<Typography variant='h6'>{item.tag}</Typography>}
                   value={item.tag}
                   classes={{ root: clsx(classes.tab, classes.menuSpacing) }}
                   onClick={() => {
@@ -329,11 +326,12 @@ export default function Navbar(props) {
               color='inherit'
               className={clsx(classes.mobileIcon, classes.menuSpacing)}
             >
-              <MoreIcon />
+              <MenuIcon />
             </IconButton>
           </div>
         </Toolbar>
       </AppBar>
+      <Toolbar />
       <Waves color='#3f51b5' />
       <ScrollToTop />
       {mobileMenu}
