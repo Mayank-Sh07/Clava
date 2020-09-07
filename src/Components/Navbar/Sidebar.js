@@ -12,7 +12,6 @@ import {
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
 import MenuIcon from "@material-ui/icons/Menu";
-import ProfileIcon from "@material-ui/icons/PersonSharp";
 import FeedIcon from "@material-ui/icons/Timeline";
 import CalendarIcon from "@material-ui/icons/Event";
 import EventsIcon from "@material-ui/icons/FormatListNumberedSharp";
@@ -27,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: 230,
     height: "100vh",
+    backgroundColor: theme.palette.primary.light,
   },
   profileAvatar: {
     width: theme.spacing(8),
@@ -55,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // SIDEDRAWER Function
-export default function SideDrawer({ handleIconClick }) {
+export default function SideDrawer({ handleMenuClick }) {
   const classes = useStyles();
   // Stores the State and Anchor for the Drawer
   const [state, setState] = React.useState({ left: false });
@@ -112,9 +112,7 @@ export default function SideDrawer({ handleIconClick }) {
                   </Avatar>
                 }
               >
-                <Avatar className={classes.profileAvatar} alt='USER NAME'>
-                  <ProfileIcon />
-                </Avatar>
+                <Avatar className={classes.profileAvatar} alt='USER NAME' />
               </Badge>
             </ListItemAvatar>
             <ListItemText
@@ -129,7 +127,7 @@ export default function SideDrawer({ handleIconClick }) {
               button
               className={classes.drawerItem}
               onClick={() => {
-                handleIconClick(item.tag);
+                handleMenuClick(item.tag);
                 closeDrawer();
               }}
             >

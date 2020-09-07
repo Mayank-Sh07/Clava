@@ -26,6 +26,7 @@ import {
   Fab,
   Tabs,
   Tab,
+  useTheme,
 } from "@material-ui/core";
 
 // MUI Icons
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
     position: "fixed",
     bottom: theme.spacing(2),
     right: theme.spacing(2),
+    zIndex: 1500,
   },
   tab: {
     minWidth: 95,
@@ -109,7 +111,8 @@ function ScrollToTop() {
 // Navbar Functional Component
 export default function Navbar(props) {
   const classes = useStyles();
-
+  // using the theme
+  const theme = useTheme();
   // Using the useHistory Hook
   const history = useHistory();
 
@@ -134,8 +137,9 @@ export default function Navbar(props) {
   };
 
   // Closes the profile Menu in Desktop view
-  const handleProfileMenuClick = (url) => {
+  const handleMenuClick = (url) => {
     setAnchor(false);
+    setMobileAnchor(false);
     if (url !== null) {
       history.push(url);
       setValue(null);
@@ -147,11 +151,11 @@ export default function Navbar(props) {
     setMobileAnchor(event.currentTarget);
   };
 
-  // Closes the profile Menu in Desktop view
-  const handleMobileMenuClick = (url) => {
-    setMobileAnchor(false);
-    if (url !== null) history.push(url);
-  };
+  // Closes the Menu in Mobile view
+  // const handleMobileMenuClick = (url) => {
+  //   setMobileAnchor(false);
+  //   if (url !== null) history.push(url);
+  // };
 
   // Handles Appbar Icon Click
   const handleIconClick = (url) => {
@@ -176,12 +180,6 @@ export default function Navbar(props) {
     { tag: "Gallery", icon: <GalleryIcon /> },
   ];
 
-  // All the Menu items for mobile
-  const mobileMenuItems = [
-    { icon: <AboutIcon />, tag: "About" },
-    { icon: <ProfileIcon />, tag: "Profile" },
-  ];
-
   // Profile Menu (Desktop)
   const profileMenu = (
     <Menu
@@ -191,9 +189,9 @@ export default function Navbar(props) {
       open={anchor}
       TransitionComponent={Grow}
       transitionDuration={300}
-      onClose={() => handleProfileMenuClick(null)}
+      onClose={() => handleMenuClick(null)}
     >
-      <MenuItem onClick={() => handleProfileMenuClick("/Profile")}>
+      <MenuItem onClick={() => handleMenuClick("/Profile")}>
         <ProfileIcon />
         <p>Profile</p>
       </MenuItem>
@@ -215,24 +213,18 @@ export default function Navbar(props) {
       transitionDuration={500}
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={mobileAnchor}
-      onClose={() => handleMobileMenuClick(null)}
+      onClose={() => handleMenuClick(null)}
     >
-      {mobileMenuItems.map((item) => (
-        <MenuItem onClick={() => handleIconClick(item.tag)}>
-          <IconButton
-            disableRipple
-            color='inherit'
-            onClick={() => handleIconClick(item.tag)}
-          >
-            {item.icon}
-          </IconButton>
-          <p>{item.tag}</p>
-        </MenuItem>
-      ))}
+      <MenuItem onClick={() => handleMenuClick("/About")}>
+        <AboutIcon />
+        <p>About</p>
+      </MenuItem>
+      <MenuItem onClick={() => handleMenuClick("/Profile")}>
+        <ProfileIcon />
+        <p>Profile</p>
+      </MenuItem>
       <MenuItem>
-        <IconButton disableRipple color='inherit'>
-          <LogoutIcon />
-        </IconButton>
+        <LogoutIcon />
         <p>Logout</p>
       </MenuItem>
     </Menu>
@@ -242,7 +234,7 @@ export default function Navbar(props) {
     <div className={classes.grow} id='back-to-top-anchor'>
       <AppBar elevation={0}>
         <Toolbar disableGutters>
-          <SideDrawer handleIconClick={handleIconClick} />
+          <SideDrawer handleMenuClick={handleMenuClick} />
           <Typography variant='h3' noWrap>
             Clava
           </Typography>
@@ -332,7 +324,7 @@ export default function Navbar(props) {
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Waves color='#3f51b5' />
+      <Waves color={theme.palette.primary.main} />
       <ScrollToTop />
       {mobileMenu}
       {profileMenu}
