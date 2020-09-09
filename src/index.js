@@ -3,14 +3,14 @@ import ReactDOM from "react-dom";
 import ClavaThemeProvider from "./Theme/ClavaThemeProvider";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Clava from "./Clava";
-import { BrowserRouter } from "react-router-dom";
+import Firebase, { FirebaseContext } from "./Components/Firebase/init";
 
 ReactDOM.render(
-  <BrowserRouter>
-    <ClavaThemeProvider>
-      <CssBaseline />
+  <ClavaThemeProvider>
+    <CssBaseline />
+    <FirebaseContext.Provider value={new Firebase()}>
       <Clava />
-    </ClavaThemeProvider>
-  </BrowserRouter>,
+    </FirebaseContext.Provider>
+  </ClavaThemeProvider>,
   document.getElementById("root")
 );

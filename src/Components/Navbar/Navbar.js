@@ -1,17 +1,11 @@
 import React from "react";
-// Hook to use history object from Router
-import { useHistory } from "react-router-dom";
-// To apply multiple classes
-import clsx from "clsx";
-// Function to Generate unique ID's
-import { v4 as uuidv4 } from "uuid";
-// Theme Context
-import { ClavaThemeContext } from "../../Theme/ClavaThemeProvider";
-// Style for Appbar
 import Waves from "../Svg/Waves";
-//
 import SideDrawer from "./Sidebar";
-// MUI Core Components
+import clsx from "clsx";
+import { useHistory } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { FirebaseContext, UserContext } from "../Firebase";
+import { ClavaThemeContext } from "../../Theme/ClavaThemeProvider";
 import {
   makeStyles,
   AppBar,
@@ -28,27 +22,28 @@ import {
   Tab,
   useTheme,
 } from "@material-ui/core";
+import {
+  AccountIcon,
+  ProfileIcon,
+  LogoutIcon,
+  DarkThemeIcon,
+  LightThemeIcon,
+  AboutIcon,
+  HomeIcon,
+  GalleryIcon,
+  NotificationsIcon,
+  KeyboardArrowUpIcon,
+} from "../Icons";
 
-// MUI Icons
-import AccountIcon from "@material-ui/icons/AccountCircle";
-import ProfileIcon from "@material-ui/icons/PersonSharp";
-import LogoutIcon from "@material-ui/icons/ExitToAppSharp";
-import DarkThemeIcon from "@material-ui/icons/Brightness4";
-import LightThemeIcon from "@material-ui/icons/Brightness7";
-import AboutIcon from "@material-ui/icons/InfoOutlined";
-import HomeIcon from "@material-ui/icons/Home";
-import GalleryIcon from "@material-ui/icons/PhotoSizeSelectActual";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import MenuIcon from "@material-ui/icons/MoreVert";
-import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
-
-// JSS Styles Used
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
   menuSpacing: {
     marginRight: theme.spacing(2.15),
+  },
+  menuSpacingMobile: {
+    marginRight: theme.spacing(1.2),
   },
   sectionDesktop: {
     display: "none",
@@ -77,26 +72,19 @@ const useStyles = makeStyles((theme) => ({
     width: 0,
   },
   mobileIcon: {
-    padding: "12px 0px 12px 0px",
+    padding: "8px 5px 8px 5px",
   },
 }));
 
-// Function to Return to Top on Scroll
 function ScrollToTop() {
   const classes = useStyles();
-  // listens for the scrollbar to go below a certain scroll (default: 100px)
   const trigger = useScrollTrigger();
-  // returns user back to the elements supplied ID
   const handleClick = (event) => {
-    // anchor stores the element which has the ID passed in the querySelector()
     const anchor = document.querySelector("#back-to-top-anchor");
     if (anchor) {
-      // scrollIntoView() is a javaScript function that auto-Scrolls to the attached element
       anchor.scrollIntoView({ behavior: "smooth", block: "center" });
     }
   };
-
-  /* The Zoom Transition is used to show the pop animation of the ^ button, Fab is Floating Action Button */
   return (
     <Zoom in={trigger}>
       <div onClick={handleClick} role='presentation' className={classes.root}>
@@ -108,79 +96,23 @@ function ScrollToTop() {
   );
 }
 
-// Navbar Functional Component
 export default function Navbar(props) {
   const classes = useStyles();
-  // using the theme
   const theme = useTheme();
-  // Using the useHistory Hook
   const history = useHistory();
-
-  // Context for switching themes
+  const Firebase = React.useContext(FirebaseContext);
+  const { currentUser } = React.useContext(UserContext);
   const { currentTheme, setTheme } = React.useContext(ClavaThemeContext);
-
-  // true if current theme is dark else false
   const isDark = Boolean(currentTheme === "dark");
-
-  // Handles the Menu for screens md and above
   const [anchor, setAnchor] = React.useState(false);
-
-  // Handles the Menu for screens sm and below
-  const [mobileAnchor, setMobileAnchor] = React.useState(false);
-
-  // Handles the selection of Tabs
   const [value, setValue] = React.useState(undefined);
 
-  // Opens the profile Menu in Desktop view
-  const handleProfileMenuOpen = (event) => {
-    setAnchor(event.currentTarget);
-  };
-
-  // Closes the profile Menu in Desktop view
-  const handleMenuClick = (url) => {
-    setAnchor(false);
-    setMobileAnchor(false);
-    if (url !== null) {
-      history.push(url);
-      setValue(null);
-    }
-  };
-
-  // Opens the profile Menu in Mobile view
-  const handleMobileMenuOpen = (event) => {
-    setMobileAnchor(event.currentTarget);
-  };
-
-  // Closes the Menu in Mobile view
-  // const handleMobileMenuClick = (url) => {
-  //   setMobileAnchor(false);
-  //   if (url !== null) history.push(url);
-  // };
-
-  // Handles Appbar Icon Click
-  const handleIconClick = (url) => {
-    if (url !== null) history.push(url);
-  };
-
-  // Changes the active Tab
-  const handleTabChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  // Desktop Appbar Tabs
-  const DesktopTabs = [
+  const menuTabs = [
     { tag: "Home", icon: <HomeIcon /> },
     { tag: "About", icon: <AboutIcon /> },
     { tag: "Gallery", icon: <GalleryIcon /> },
   ];
 
-  // Mobile Appbar Tabs
-  const MobileTabs = [
-    { tag: "Home", icon: <HomeIcon /> },
-    { tag: "Gallery", icon: <GalleryIcon /> },
-  ];
-
-  // Profile Menu (Desktop)
   const profileMenu = (
     <Menu
       anchorEl={anchor}
@@ -195,46 +127,46 @@ export default function Navbar(props) {
         <ProfileIcon />
         <p>Profile</p>
       </MenuItem>
-      <MenuItem>
+      <MenuItem
+        onClick={() => {
+          Firebase.doSignOut();
+        }}
+      >
         <LogoutIcon />
         <p> Logout</p>
       </MenuItem>
     </Menu>
   );
 
-  // Mobile Menu
-  const mobileMenu = (
-    <Menu
-      anchorEl={mobileAnchor}
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={uuidv4()}
-      keepMounted
-      TransitionComponent={Grow}
-      transitionDuration={500}
-      transformOrigin={{ vertical: "top", horizontal: "right" }}
-      open={mobileAnchor}
-      onClose={() => handleMenuClick(null)}
-    >
-      <MenuItem onClick={() => handleMenuClick("/About")}>
-        <AboutIcon />
-        <p>About</p>
-      </MenuItem>
-      <MenuItem onClick={() => handleMenuClick("/Profile")}>
-        <ProfileIcon />
-        <p>Profile</p>
-      </MenuItem>
-      <MenuItem>
-        <LogoutIcon />
-        <p>Logout</p>
-      </MenuItem>
-    </Menu>
-  );
+  const handleProfileMenuOpen = (event) => {
+    setAnchor(event.currentTarget);
+  };
+
+  const handleMenuClick = (url) => {
+    setAnchor(false);
+    if (url !== null) {
+      history.push(url);
+      setValue(null);
+    }
+  };
+
+  const handleIconClick = (url) => {
+    if (url !== null) history.push(url);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   return (
     <div className={classes.grow} id='back-to-top-anchor'>
       <AppBar elevation={0}>
         <Toolbar disableGutters>
-          <SideDrawer handleMenuClick={handleMenuClick} />
+          <SideDrawer
+            handleMenuClick={handleMenuClick}
+            currentUser={currentUser}
+            Firebase={Firebase}
+          />
           <Typography variant='h3' noWrap>
             Clava
           </Typography>
@@ -250,7 +182,7 @@ export default function Navbar(props) {
               textColor='secondary'
               TabIndicatorProps={{ style: { height: "4px" } }}
             >
-              {DesktopTabs.map((item) => (
+              {menuTabs.map((item) => (
                 <Tab
                   label={<Typography variant='h6'>{item.tag}</Typography>}
                   value={item.tag}
@@ -275,7 +207,11 @@ export default function Navbar(props) {
             </IconButton>
             <IconButton
               edge='end'
-              onClick={handleProfileMenuOpen}
+              onClick={(event) => {
+                !!currentUser
+                  ? handleProfileMenuOpen(event)
+                  : Firebase.doSignInWithGoogle();
+              }}
               color='inherit'
               className={classes.menuSpacing}
             >
@@ -293,7 +229,7 @@ export default function Navbar(props) {
               TabIndicatorProps={{ style: { bottom: "6px" } }}
               variant='fullWidth'
             >
-              {MobileTabs.map((item) => (
+              {menuTabs.map((item) => (
                 <Tab
                   icon={item.icon}
                   value={item.tag}
@@ -306,7 +242,7 @@ export default function Navbar(props) {
             </Tabs>
             <IconButton
               color='inherit'
-              className={clsx(classes.mobileIcon, classes.menuSpacing)}
+              className={clsx(classes.mobileIcon, classes.menuSpacingMobile)}
               onClick={() => {
                 isDark ? setTheme("light") : setTheme("dark");
               }}
@@ -314,11 +250,16 @@ export default function Navbar(props) {
               {isDark ? <LightThemeIcon /> : <DarkThemeIcon />}
             </IconButton>
             <IconButton
-              onClick={handleMobileMenuOpen}
+              edge='end'
+              onClick={(event) => {
+                !!currentUser
+                  ? handleProfileMenuOpen(event)
+                  : Firebase.doSignInWithGoogle();
+              }}
               color='inherit'
-              className={clsx(classes.mobileIcon, classes.menuSpacing)}
+              className={clsx(classes.mobileIcon, classes.menuSpacingMobile)}
             >
-              <MenuIcon />
+              <AccountIcon />
             </IconButton>
           </div>
         </Toolbar>
@@ -326,7 +267,6 @@ export default function Navbar(props) {
       <Toolbar />
       <Waves color={theme.palette.primary.main} />
       <ScrollToTop />
-      {mobileMenu}
       {profileMenu}
     </div>
   );

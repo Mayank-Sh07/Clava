@@ -9,22 +9,25 @@ import {
   ListItemAvatar,
   Avatar,
   Badge,
+  Typography,
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
-import MenuIcon from "@material-ui/icons/Menu";
-import FeedIcon from "@material-ui/icons/Timeline";
-import CalendarIcon from "@material-ui/icons/Event";
-import EventsIcon from "@material-ui/icons/FormatListNumberedSharp";
-import BlogIcon from "@material-ui/icons/Book";
-import AlumniIcon from "@material-ui/icons/Group";
-import AttendanceIcon from "@material-ui/icons/FormatShapes";
-import LogoutIcon from "@material-ui/icons/ExitToAppSharp";
-import EditIcon from "@material-ui/icons/Edit";
+import {
+  AccountIcon,
+  LogoutIcon,
+  MenuIcon,
+  FeedIcon,
+  CalendarIcon,
+  EventsIcon,
+  BlogIcon,
+  AlumniIcon,
+  AttendanceIcon,
+  EditIcon,
+} from "../Icons";
 
-// Style Classes Used for the Components
 const useStyles = makeStyles((theme) => ({
   drawer: {
-    width: 230,
+    width: 220,
     height: "100vh",
     backgroundColor: theme.palette.primary.light,
   },
@@ -54,20 +57,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// SIDEDRAWER Function
-export default function SideDrawer({ handleMenuClick }) {
+export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
   const classes = useStyles();
-  // Stores the State and Anchor for the Drawer
   const [state, setState] = React.useState({ left: false });
-  // Function to Toggle the Drawer
   const toggleDrawer = (anchor, open) => (event) => {
     setState({ [anchor]: open });
   };
-  //
   const closeDrawer = () => {
     setState({ left: false });
   };
-  //
   const listItems = [
     { icon: <EventsIcon />, tag: "Upcoming" },
     { icon: <FeedIcon />, tag: "Feed" },
@@ -94,41 +92,50 @@ export default function SideDrawer({ handleMenuClick }) {
         className={classes.drawer}
       >
         <List className={classes.drawer}>
-          <ListItem divider key={uuidv4()}>
-            <ListItemAvatar>
-              <Badge
-                overlap='circle'
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-                badgeContent={
-                  <Avatar className={classes.badgeContent} alt='Edit'>
-                    <EditIcon
-                      style={{
-                        fontSize: "15px",
-                      }}
-                    />
-                  </Avatar>
-                }
-              >
-                <Avatar className={classes.profileAvatar} alt='USER NAME' />
-              </Badge>
-            </ListItemAvatar>
-            <ListItemText
-              primary='User Name'
-              secondary='designation'
-              className={classes.marginHorizontal}
-            />
-          </ListItem>
+          {!!currentUser ? (
+            <ListItem divider key={uuidv4()}>
+              <ListItemAvatar>
+                <Badge
+                  overlap='circle'
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                  }}
+                  badgeContent={
+                    <Avatar className={classes.badgeContent} alt='Edit'>
+                      <EditIcon
+                        style={{
+                          fontSize: "15px",
+                        }}
+                      />
+                    </Avatar>
+                  }
+                >
+                  <Avatar
+                    className={classes.profileAvatar}
+                    src={currentUser.photoURL}
+                    alt={currentUser.displayName}
+                  />
+                </Badge>
+              </ListItemAvatar>
+              <ListItemText
+                primary={currentUser.displayName}
+                className={classes.marginHorizontal}
+              />
+            </ListItem>
+          ) : (
+            <ListItem divider key={uuidv4()}>
+              <Typography variant='h4'>Clava</Typography>
+            </ListItem>
+          )}
           {listItems.map((item) => (
             <ListItem
               key={uuidv4()}
               button
               className={classes.drawerItem}
               onClick={() => {
-                handleMenuClick(item.tag);
                 closeDrawer();
+                handleMenuClick(item.tag);
               }}
             >
               <ListItemAvatar>
@@ -139,9 +146,26 @@ export default function SideDrawer({ handleMenuClick }) {
               <ListItemText>{item.tag}</ListItemText>
             </ListItem>
           ))}
-          <ListItem className={classes.drawerFooter} button>
-            <LogoutIcon className={classes.marginHorizontal} />
-            <ListItemText>Logout</ListItemText>
+          <ListItem
+            className={classes.drawerFooter}
+            button
+            onClick={() => {
+              !!currentUser
+                ? Firebase.doSignOut()
+                : Firebase.doSignInWithGoogle();
+            }}
+          >
+            {!!currentUser ? (
+              <>
+                <LogoutIcon className={classes.marginHorizontal} />
+                <ListItemText>Logout</ListItemText>
+              </>
+            ) : (
+              <>
+                <AccountIcon className={classes.marginHorizontal} />
+                <ListItemText>Login</ListItemText>
+              </>
+            )}
           </ListItem>
         </List>
       </Drawer>
