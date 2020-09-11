@@ -11,10 +11,15 @@ const UserContextProvider = ({ children }) => {
 
   useEffect(() => {
     console.log("User Context CDM");
-    console.log(Firebase.jigyasa);
     const unSubscribe = Firebase.auth.onAuthStateChanged((user) => {
-      console.log(user);
-      setCurrentUser(user);
+      if (user != null) {
+        const userName = user.displayName.split(" ");
+        setCurrentUser({
+          ...user,
+          firstName: userName[0],
+          regsNumber: userName.pop(),
+        });
+      } else setCurrentUser(null);
       setPending(false);
     });
 

@@ -17,6 +17,10 @@ import AlumniIcon from "@material-ui/icons/Group";
 import AttendanceIcon from "@material-ui/icons/FormatShapes";
 import EditIcon from "@material-ui/icons/Edit";
 import CloseIcon from "@material-ui/icons/Close";
+import MoreIcon from "@material-ui/icons/MoreVert";
+import HeartIcon from "@material-ui/icons/Favorite";
+import ShareIcon from "@material-ui/icons/Share";
+import ExpandIcon from "@material-ui/icons/ExpandMore";
 import { ReactComponent as GoogleIcon } from "./GoogleIcon.svg";
 
 export {
@@ -39,5 +43,9 @@ export {
   AttendanceIcon,
   EditIcon,
   CloseIcon,
+  MoreIcon,
+  HeartIcon,
+  ShareIcon,
+  ExpandIcon,
   GoogleIcon,
 };

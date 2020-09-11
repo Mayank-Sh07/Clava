@@ -21,7 +21,6 @@ class Firebase {
     app.initializeApp(firebaseConfig);
 
     this.auth = app.auth();
-    this.jigyasa = "Jigyasa";
     this.googleProvider = new app.auth.GoogleAuthProvider();
   }
 

@@ -8,7 +8,6 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Badge,
   Typography,
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
@@ -22,7 +21,6 @@ import {
   BlogIcon,
   AlumniIcon,
   AttendanceIcon,
-  EditIcon,
 } from "../Icons";
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
   },
   marginHorizontal: {
-    margin: "0 10px 0 10px",
+    margin: "0 15px 0 15px",
   },
   badgeContent: {
     height: "20px",
@@ -60,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
   const classes = useStyles();
   const [state, setState] = React.useState({ left: false });
+  console.log(currentUser);
   const toggleDrawer = (anchor, open) => (event) => {
     setState({ [anchor]: open });
   };
@@ -95,31 +94,15 @@ export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
           {!!currentUser ? (
             <ListItem divider key={uuidv4()}>
               <ListItemAvatar>
-                <Badge
-                  overlap='circle'
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                  }}
-                  badgeContent={
-                    <Avatar className={classes.badgeContent} alt='Edit'>
-                      <EditIcon
-                        style={{
-                          fontSize: "15px",
-                        }}
-                      />
-                    </Avatar>
-                  }
-                >
-                  <Avatar
-                    className={classes.profileAvatar}
-                    src={currentUser.photoURL}
-                    alt={currentUser.displayName}
-                  />
-                </Badge>
+                <Avatar
+                  className={classes.profileAvatar}
+                  src={currentUser.photoURL}
+                  alt={currentUser.firstName}
+                />
               </ListItemAvatar>
               <ListItemText
-                primary={currentUser.displayName}
+                primary={currentUser.firstName}
+                secondary={currentUser.regsNumber}
                 className={classes.marginHorizontal}
               />
             </ListItem>
