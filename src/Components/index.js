@@ -8,6 +8,8 @@ import Calendar from "./Calendar/Calendar";
 import Attendance from "./Attendance/Attendance";
 import Alumni from "./Alumni/Alumni";
 import Navbar from "./Navbar/Navbar";
+import Profile from "./Profile/Profile";
+import Dashboard from "./Dashboard/Dashboard";
 
 export {
   Home,
@@ -20,4 +22,6 @@ export {
   Attendance,
   Alumni,
   Navbar,
+  Profile,
+  Dashboard,
 };

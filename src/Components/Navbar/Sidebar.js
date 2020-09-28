@@ -58,21 +58,95 @@ const useStyles = makeStyles((theme) => ({
 export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
   const classes = useStyles();
   const [state, setState] = React.useState({ left: false });
-  console.log(currentUser);
   const toggleDrawer = (anchor, open) => (event) => {
     setState({ [anchor]: open });
   };
   const closeDrawer = () => {
     setState({ left: false });
   };
-  const listItems = [
-    { icon: <EventsIcon />, tag: "Upcoming" },
-    { icon: <FeedIcon />, tag: "Feed" },
-    { icon: <BlogIcon />, tag: "Blog" },
-    { icon: <CalendarIcon />, tag: "Calendar" },
-    { icon: <AttendanceIcon />, tag: "Attendance" },
-    { icon: <AlumniIcon />, tag: "Alumni" },
-  ];
+  const signIn = () => {
+    Firebase.doSignInWithGoogle();
+    closeDrawer();
+  };
+  const signOut = () => {
+    Firebase.doSignOut();
+    closeDrawer();
+  };
+  // const listItems = [
+  //   { icon: <FeedIcon />, tag: "Dashboard", adminOnly: true, default: true },
+  //   { icon: <EventsIcon />, tag: "Upcoming", default: false },
+  //   { icon: <FeedIcon />, tag: "Feed", default: false },
+  //   { icon: <BlogIcon />, tag: "Blog", default: false },
+  //   {
+  //     icon: <CalendarIcon />,
+  //     tag: "Calendar",
+  //     memberOnly: true,
+  //     default: true,
+  //   },
+  //   {
+  //     icon: <AttendanceIcon />,
+  //     tag: "Attendance",
+  //     memberOnly: true,
+  //     default: true,
+  //   },
+  //   { icon: <AlumniIcon />, tag: "Alumni", default: false },
+  // ];
+
+  // const checkAuth = (item) => {
+  //   if (currentUser === null) {
+  //     return item.default;
+  //   } else if (!!item.adminOnly) {
+  //     if (currentUser.isAdmin) return false;
+  //     else return true;
+  //   } else if (!!item.memberOnly) {
+  //     if (currentUser.isMember || currentUser.isAdmin) return false;
+  //     else return true;
+  //   } else return false;
+  // };
+  // const listItems = [
+  //   { icon: <FeedIcon />, tag: "Dashboard" },
+  //   { icon: <EventsIcon />, tag: "Upcoming" },
+  //   { icon: <FeedIcon />, tag: "Feed" },
+  //   { icon: <BlogIcon />, tag: "Blog" },
+  //   { icon: <CalendarIcon />, tag: "Calendar" },
+  //   { icon: <AttendanceIcon />, tag: "Attendance" },
+  //   { icon: <AlumniIcon />, tag: "Alumni" },
+  // ];
+
+  const sidebarItems = (currentUser) => {
+    if (currentUser === null) {
+      return [
+        { icon: <EventsIcon />, tag: "Upcoming" },
+        { icon: <AlumniIcon />, tag: "Alumni" },
+      ];
+    } else if (currentUser.isAdmin) {
+      return [
+        { icon: <FeedIcon />, tag: "Dashboard" },
+        { icon: <EventsIcon />, tag: "Upcoming" },
+        { icon: <FeedIcon />, tag: "Feed" },
+        { icon: <BlogIcon />, tag: "Blog" },
+        { icon: <CalendarIcon />, tag: "Calendar" },
+        { icon: <AttendanceIcon />, tag: "Attendance" },
+        { icon: <AlumniIcon />, tag: "Alumni" },
+      ];
+    } else if (currentUser.isMember) {
+      return [
+        { icon: <EventsIcon />, tag: "Upcoming" },
+        { icon: <FeedIcon />, tag: "Feed" },
+        { icon: <BlogIcon />, tag: "Blog" },
+        { icon: <CalendarIcon />, tag: "Calendar" },
+        { icon: <AttendanceIcon />, tag: "Attendance" },
+        { icon: <AlumniIcon />, tag: "Alumni" },
+      ];
+    } else
+      return [
+        { icon: <EventsIcon />, tag: "Upcoming" },
+        { icon: <FeedIcon />, tag: "Feed" },
+        { icon: <BlogIcon />, tag: "Blog" },
+        { icon: <CalendarIcon />, tag: "Calendar" },
+        { icon: <AlumniIcon />, tag: "Alumni" },
+      ];
+  };
 
   return (
     <React.Fragment key={uuidv4()}>
@@ -111,7 +185,7 @@ export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
               <Typography variant='h4'>Clava</Typography>
             </ListItem>
           )}
-          {listItems.map((item) => (
+          {sidebarItems(currentUser).map((item) => (
             <ListItem
               key={uuidv4()}
               button
@@ -133,9 +207,7 @@ export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
             className={classes.drawerFooter}
             button
             onClick={() => {
-              !!currentUser
-                ? Firebase.doSignOut()
-                : Firebase.doSignInWithGoogle();
+              !!currentUser ? signOut() : signIn();
             }}
           >
             {!!currentUser ? (

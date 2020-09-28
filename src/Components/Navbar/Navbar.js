@@ -106,7 +106,7 @@ export default function Navbar(props) {
   const isDark = Boolean(currentTheme === "dark");
   const [anchor, setAnchor] = React.useState(false);
   const [value, setValue] = React.useState(undefined);
-
+  console.log(currentUser);
   const menuTabs = [
     { tag: "Home", icon: <HomeIcon /> },
     { tag: "About", icon: <AboutIcon /> },
@@ -130,6 +130,7 @@ export default function Navbar(props) {
       <MenuItem
         onClick={() => {
           Firebase.doSignOut();
+          handleMenuClick(null);
         }}
       >
         <LogoutIcon />
@@ -234,7 +235,7 @@ export default function Navbar(props) {
                   icon={item.icon}
                   value={item.tag}
                   classes={{
-                    root: clsx(classes.mobileTab, classes.menuSpacing),
+                    root: clsx(classes.mobileTab, classes.menuSpacingMobile),
                   }}
                   onClick={() => handleIconClick(item.tag)}
                 />

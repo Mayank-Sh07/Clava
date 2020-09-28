@@ -12,6 +12,8 @@ import {
   Attendance,
   Alumni,
   Navbar,
+  Profile,
+  Dashboard,
 } from "./Components";
 import { PrivateRoute, UserContextProvider } from "./Components/Firebase";
 
@@ -28,10 +30,24 @@ function Clava() {
             <Route path='/Gallery' exact component={Gallery} />
             <Route path='/Upcoming' exact component={Upcoming} />
             <Route path='/Alumni' exact component={Alumni} />
+            <PrivateRoute
+              path='/Dashboard'
+              exact
+              component={Dashboard}
+              restricted
+              adminOnly
+            />
             <PrivateRoute path='/Feed' exact component={Feed} />
             <PrivateRoute path='/Blog' exact component={Blog} />
             <PrivateRoute path='/Calendar' exact component={Calendar} />
-            <PrivateRoute path='/Attendance' exact component={Attendance} />
+            <PrivateRoute
+              path='/Attendance'
+              exact
+              component={Attendance}
+              restricted
+              memberOnly
+            />
+            <PrivateRoute path='/Profile' exact component={Profile} />
             <Route path='/' component={Home} />
           </Switch>
         </BrowserRouter>

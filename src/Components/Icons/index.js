@@ -21,6 +21,8 @@ import MoreIcon from "@material-ui/icons/MoreVert";
 import HeartIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
 import ExpandIcon from "@material-ui/icons/ExpandMore";
+import SecurityIcon from "@material-ui/icons/Security";
+import PlusIcon from "@material-ui/icons/AddCircle";
 import { ReactComponent as GoogleIcon } from "./GoogleIcon.svg";
 
 export {
@@ -47,5 +49,7 @@ export {
   HeartIcon,
   ShareIcon,
   ExpandIcon,
+  PlusIcon,
+  SecurityIcon,
   GoogleIcon,
 };

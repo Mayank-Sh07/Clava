@@ -9,7 +9,7 @@ const theme = createMuiTheme({
     secondary: {
       main: "#fffdc0",
     },
-    background: { default: "#e0e0e0" },
+    background: { default: "#ffffff" },
   },
   typography: {
     fontFamily: "Montserrat",
