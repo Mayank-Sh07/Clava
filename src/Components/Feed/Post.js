@@ -12,7 +12,8 @@ import {
   Collapse,
   Typography,
 } from "@material-ui/core";
-import { MoreIcon, ShareIcon, HeartIcon, ExpandIcon } from "../Icons";
+import { ExpandIcon } from "../Icons";
+import PostMenu from "./PostMenu";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
   media: {
     height: 0,
     paddingTop: "100%",
+    objectFit: "contain",
   },
   expand: {
     transform: "rotate(0deg)",
@@ -34,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Post({ post }) {
+export default function Post({ post, userPost }) {
+  console.log(userPost);
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
@@ -43,32 +46,19 @@ export default function Post({ post }) {
   return (
     <Card className={classes.card}>
       <CardHeader
-        avatar={
-          <Avatar aria-label='recipe' className={classes.avatar}>
-            {post.username}
-          </Avatar>
-        }
-        action={
-          <IconButton aria-label='settings'>
-            <MoreIcon />
-          </IconButton>
-        }
-        title={post.username}
+        avatar={<Avatar className={classes.avatar}>{post.userName}</Avatar>}
+        action={userPost ? <PostMenu post={post} /> : <></>}
+        title={post.userName}
         subheader={post.date}
       />
-      <CardMedia className={classes.media} image={post.img} />
+      <CardMedia className={classes.media} image={post.imageURL} />
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
           {post.caption}
         </Typography>
       </CardContent>
+
       <CardActions disableSpacing>
-        <IconButton>
-          <HeartIcon />
-        </IconButton>
-        <IconButton>
-          <ShareIcon />
-        </IconButton>
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
@@ -78,6 +68,7 @@ export default function Post({ post }) {
           <ExpandIcon />
         </IconButton>
       </CardActions>
+
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent>
           <Typography paragraph>{post.description}</Typography>

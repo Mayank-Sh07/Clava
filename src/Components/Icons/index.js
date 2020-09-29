@@ -23,6 +23,7 @@ import ShareIcon from "@material-ui/icons/Share";
 import ExpandIcon from "@material-ui/icons/ExpandMore";
 import SecurityIcon from "@material-ui/icons/Security";
 import PlusIcon from "@material-ui/icons/AddCircle";
+import DeleteIcon from "@material-ui/icons/Delete";
 import { ReactComponent as GoogleIcon } from "./GoogleIcon.svg";
 
 export {
@@ -51,5 +52,6 @@ export {
   ExpandIcon,
   PlusIcon,
   SecurityIcon,
+  DeleteIcon,
   GoogleIcon,
 };

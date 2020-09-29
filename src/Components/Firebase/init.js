@@ -4,6 +4,7 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/database";
 import "firebase/functions";
+import "firebase/storage";
 
 const FirebaseContext = React.createContext(null);
 
@@ -23,8 +24,9 @@ class Firebase {
     app.initializeApp(firebaseConfig);
 
     this.auth = app.auth();
-    this.fs = app.firestore();
-    this.db = app.database();
+    this.firestore = app.firestore;
+    this.database = app.database();
+    this.storage = app.storage;
     this.functions = app.functions();
     this.googleProvider = new app.auth.GoogleAuthProvider();
   }
@@ -36,12 +38,14 @@ class Firebase {
         this.auth.currentUser.delete().then(() => {});
       } else if (authUser.additionalUserInfo.isNewUser) {
         const userData = {
-          displayName: authUser.user.displayName,
-          email: authUser.user.email,
-          photoURL: authUser.user.photoURL,
           createdAt: new Date(),
+          userPosts: [],
+          userBlogPosts: [],
         };
-        this.fs.collection("users").doc(authUser.user.uid).set(userData);
+        this.firestore()
+          .collection("users")
+          .doc(authUser.user.uid)
+          .set(userData);
       }
     });
 

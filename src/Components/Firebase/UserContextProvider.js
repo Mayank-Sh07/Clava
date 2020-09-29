@@ -14,29 +14,36 @@ const UserContextProvider = ({ children }) => {
         Firebase.auth.currentUser
           .getIdTokenResult()
           .then((idTokenResult) => {
-            const userName = user.displayName.split(" ");
+            let userName = user.displayName.split(" ");
             const regsNumber = userName.pop();
-            const name = userName.join(" ");
             const userRoles = {
               // isAdmin: Boolean(idTokenResult.claims.admin),
               // isMember: Boolean(idTokenResult.claims.member),
-              isAdmin: false,
+              isAdmin: true,
               isMember: true,
             };
-            console.log(userRoles);
-            setCurrentUser({
-              ...user,
+            return {
+              uid: user.uid,
+              phoneNumber: user.phoneNumber,
+              photoURL: user.photoURL,
+              email: user.email,
               firstName: userName[0],
-              name: name,
+              name: userName.join(" "),
               regsNumber: regsNumber,
               ...userRoles,
-            });
+              userDoc: Firebase.firestore().collection("users").doc(user.uid),
+            };
           })
-          .catch(console.log("ERROR IN GETTING USERDATA"));
+          .then(async (authData) => {
+            const userPosts = await authData.userDoc.get();
+            setCurrentUser({ ...authData, ...userPosts.data() });
+            setPending(false);
+          })
+          .catch((err) => console.log(err));
       } else {
         setCurrentUser(null);
+        setPending(false);
       }
-      setPending(false);
     });
 
     return () => {
@@ -46,13 +53,12 @@ const UserContextProvider = ({ children }) => {
 
   if (pending) {
     return <>Loading...</>;
-  }
-
-  return (
-    <UserContext.Provider value={{ currentUser }}>
-      {children}
-    </UserContext.Provider>
-  );
+  } else
+    return (
+      <UserContext.Provider value={{ currentUser }}>
+        {children}
+      </UserContext.Provider>
+    );
 };
 
 export default UserContextProvider;
