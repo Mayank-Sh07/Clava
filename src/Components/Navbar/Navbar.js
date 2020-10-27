@@ -269,7 +269,7 @@ export default function Navbar(props) {
         </Toolbar>
       </AppBar>
       <Toolbar />
-      <Waves color={theme.palette.primary.main} />
+      {/* <Waves color={theme.palette.primary.main} /> */}
       <ScrollToTop />
       {profileMenu}
     </div>
