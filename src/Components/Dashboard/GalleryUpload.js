@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px 20px 10px 20px",
   },
   newPostButton: {
-    borderRadius: "2em",
+    margin: "10px 25px",
   },
 }));
 

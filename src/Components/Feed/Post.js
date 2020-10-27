@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
 }));
 
 export default function Post({ post, isUserPost }) {
@@ -52,9 +56,15 @@ export default function Post({ post, isUserPost }) {
   return (
     <Card className={classes.card}>
       <CardHeader
-        avatar={<Avatar className={classes.avatar}>{post.userName}</Avatar>}
+        avatar={
+          <Avatar
+            className={clsx(classes.avatar, classes.large)}
+            src={post.avatarPhotoURL}
+          />
+        }
         action={isUserPost ? <PostMenu post={post} /> : <></>}
         title={post.userName}
+        titleTypographyProps={{ variant: "h5" }}
         subheader={post.date}
       />
       <CardMedia
@@ -63,7 +73,7 @@ export default function Post({ post, isUserPost }) {
         src={post.imageURL}
       />
       <CardContent>
-        <Typography variant='body2' color='textSecondary' component='p'>
+        <Typography variant='h6' color='textSecondary' component='p'>
           {post.caption}
         </Typography>
       </CardContent>
@@ -81,7 +91,9 @@ export default function Post({ post, isUserPost }) {
 
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent>
-          <Typography paragraph>{post.description}</Typography>
+          <Typography variant='body1' paragraph>
+            {post.description}
+          </Typography>
         </CardContent>
       </Collapse>
     </Card>

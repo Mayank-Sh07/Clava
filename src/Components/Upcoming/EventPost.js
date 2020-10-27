@@ -12,6 +12,7 @@ import {
   Collapse,
   Typography,
   Button,
+  Grid,
 } from "@material-ui/core";
 import { ExpandIcon } from "../Icons";
 import EditEvent from "./EditEvent";
@@ -22,12 +23,12 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     width: "100%",
-    height: 850,
+    height: 720,
     [theme.breakpoints.only("sm")]: {
-      height: 650,
+      height: 600,
     },
     [theme.breakpoints.only("xs")]: {
-      height: 350,
+      height: 320,
     },
     objectFit: "cover",
     objectPosition: "50% 30%",
@@ -69,10 +70,8 @@ export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
         avatar={
           <Avatar
             className={clsx(classes.avatar, classes.large)}
-            src={currentUser.photoURL}
-          >
-            {/* {eventPost.userName} */}
-          </Avatar>
+            src={eventPost.avatarPhotoURL}
+          />
         }
         title={eventPost.userName}
         titleTypographyProps={{ variant: "h5" }}
@@ -89,6 +88,37 @@ export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
         <Typography variant='h3' align='center' color='textSecondary'>
           {eventPost.eventData.title}
         </Typography>
+        <Grid
+          container
+          alignItems='center'
+          justify='space-around'
+          style={{
+            padding: "20px 0px 20px 65px",
+            maxWidth: "600px",
+            margin: "auto",
+          }}
+        >
+          <Grid item xs={12} sm={6}>
+            <Typography variant='subtitle1'>
+              Start Date: {eventPost.eventData.extendedProps.eventStart}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant='subtitle1'>
+              End Date: {eventPost.eventData.extendedProps.eventEnd}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant='subtitle1'>
+              Start Time: {eventPost.eventData.startTime}
+            </Typography>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Typography variant='subtitle1'>
+              End Time: {eventPost.eventData.endTime}
+            </Typography>
+          </Grid>
+        </Grid>
       </CardContent>
 
       <CardActions disableSpacing>
@@ -106,7 +136,7 @@ export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
       </CardActions>
 
       <Collapse in={expanded} timeout='auto' unmountOnExit>
-        <CardContent>
+        <CardContent style={{ padding: "25px" }}>
           <Typography variant='h6' paragraph>
             {eventPost.eventData.extendedProps.description}
           </Typography>

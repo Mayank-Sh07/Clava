@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   Container,
   makeStyles,
   Grid,
-  Avatar,
   Paper,
   Typography,
   TextField,
   Button,
 } from "@material-ui/core";
 import { UserContext, FirebaseContext } from "../Firebase";
+import ProfileCard from "./ProfileCard";
+import MyEventsGrid from "./MyEventsGrid";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -28,9 +29,33 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile() {
   const classes = useStyles();
+  const [events, setEvents] = useState(null);
   const Firebase = React.useContext(FirebaseContext);
   const { currentUser } = React.useContext(UserContext);
   const { register, handleSubmit } = useForm();
+
+  useEffect(() => {
+    const unsubscribeEvent = currentUser.userDoc
+      .collection("userEvents")
+      .onSnapshot((snap) => {
+        setEvents(
+          snap.docs.map((doc) => {
+            let data = doc.data();
+            return {
+              title: data.title,
+              start: data.extendedProps.eventStart,
+              end: data.extendedProps.eventEnd,
+              id: data.id,
+              startTime: data.startTime,
+              endTime: data.endTime,
+            };
+          })
+        );
+      });
+    return () => {
+      unsubscribeEvent();
+    };
+  }, []);
 
   const handleEmailSubmit = (data) => {
     if (!data.email.endsWith("@vitstudent.ac.in") || data.email.length < 23) {
@@ -41,43 +66,44 @@ export default function Profile() {
     }
   };
 
+  if (events === null) return <h3>Loading...</h3>;
+
   return (
     <Container style={{ marginTop: "70px" }}>
       <Paper elevation={10}>
         <Grid container spacing={2} justify='center'>
           <Grid item xs={12} sm={4} align='center'>
-            <Avatar
-              className={classes.avatar}
-              src={currentUser.photoURL}
-              alt={currentUser.firstName}
-              imgProps={{ style: { objectFit: "contain" } }}
-              variant='rounded'
-            />
+            <ProfileCard user={currentUser} />
+            <div hidden={!currentUser.isAdmin}>
+              <form
+                noValidate
+                onSubmit={handleSubmit((data) => handleEmailSubmit(data))}
+                style={{ padding: "5px 10px" }}
+              >
+                <TextField
+                  variant='outlined'
+                  margin='normal'
+                  required
+                  inputRef={register}
+                  fullWidth
+                  label='Email Address'
+                  name='email'
+                  id='email'
+                />
+                <Button type='submit'>SUBMIT</Button>
+              </form>
+            </div>
           </Grid>
           <Grid item xs={12} sm={8}>
-            <Paper className={classes.description} elevation={0}>
-              <Typography variant='h2'>{currentUser.name}</Typography>
-              <Typography variant='h4'>{currentUser.regsNumber}</Typography>
-              <Typography variant='h6'>{currentUser.email}</Typography>
-            </Paper>
-          </Grid>
-          <Grid item>
-            <form
-              noValidate
-              onSubmit={handleSubmit((data) => handleEmailSubmit(data))}
+            <Typography
+              variant='h5'
+              gutterBottom
+              align='center'
+              style={{ width: "100%" }}
             >
-              <TextField
-                variant='outlined'
-                margin='normal'
-                required
-                inputRef={register}
-                fullWidth
-                label='Email Address'
-                name='email'
-                id='email'
-              />
-              <Button type='submit'>SUBMIT</Button>
-            </form>
+              My Events
+            </Typography>
+            <MyEventsGrid data={events} />
           </Grid>
         </Grid>
       </Paper>

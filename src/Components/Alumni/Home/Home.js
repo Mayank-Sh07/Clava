@@ -1,5 +1,5 @@
 import React from "react";
-import clsx from "clsx";
+import classNames from "classnames";
 import {
   makeStyles,
   Grid,
@@ -7,8 +7,8 @@ import {
   Paper,
   Container,
 } from "@material-ui/core";
-import Parallax from "./Parallax/Parallax";
-import ParallaxCarousel from "./Parallax/Carousel";
+import Parallax from "../Parallax/Parallax.js";
+import ParallaxCarousel from "../Parallax/Carousel";
 
 const useStyles = makeStyles((theme) => ({
   grid: {
@@ -75,7 +75,7 @@ export default function Home(props) {
   const classes = useStyles();
   return (
     <>
-      <Parallax filter image={require("../Utils/alumniBg.png")}>
+      <Parallax filter image={require("../Images/stars.png")}>
         <div className={classes.container}>
           <Grid container className={classes.grid} justify='center'>
             <Grid
@@ -87,14 +87,14 @@ export default function Home(props) {
               style={{ textAlign: "center" }}
             >
               <Typography variant='h1' className={classes.title}>
-                Club Alumni
+                Expaflow
               </Typography>
             </Grid>
           </Grid>
           <br />
         </div>
       </Parallax>
-      <Paper className={clsx(classes.main, classes.mainRaised)}>
+      <Paper className={classNames(classes.main, classes.mainRaised)}>
         <div className={classes.container}>
           <Container maxWidth='md' style={{ paddingTop: 100 }}>
             <ParallaxCarousel />

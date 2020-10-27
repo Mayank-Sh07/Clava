@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "10px 20px 10px 20px",
   },
   newPostButton: {
-    borderRadius: "2em",
+    margin: "10px 25px",
   },
 }));
 
@@ -46,6 +46,12 @@ export default function EventUpload({ eventID }) {
   const alterDate = (date, op) => {
     date.setDate(date.getDate() + Number(op));
     return date.toISOString().substr(0, 10);
+  };
+
+  const toProperCase = (string) => {
+    return string.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
   };
 
   const handleUpload = (event) => {
@@ -88,6 +94,7 @@ export default function EventUpload({ eventID }) {
   function handleEventPostDetails(data) {
     let eventPost = {
       id: eventID,
+      avatarPhotoURL: currentUser.photoURL,
       timestamp: Firebase.firestore.FieldValue.serverTimestamp(),
       userName: currentUser.firstName,
       date: new Intl.DateTimeFormat("en-US", {
@@ -102,7 +109,7 @@ export default function EventUpload({ eventID }) {
         endRecur: alterDate(new Date(data.endDate), 1),
         startTime: data.startTime,
         endTime: data.endTime,
-        title: data.title,
+        title: toProperCase(data.title),
         extendedProps: {
           eventStart: data.startDate,
           eventEnd: data.endDate,

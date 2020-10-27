@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { FirebaseContext, UserContext } from "../Firebase";
+import { FirebaseContext } from "../Firebase";
 import Post from "./Post";
 import { useSnackbar } from "notistack";
 import { Container, makeStyles } from "@material-ui/core";
@@ -14,13 +14,19 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     padding: "20px 40px 20px 40px",
   },
+  btnContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    width: "100%",
+    padding: "30px 25px",
+  },
 }));
 
 export default function Feed() {
   const [pending, setPending] = useState(true);
   const [Posts, setPosts] = useState(null);
   const Firebase = useContext(FirebaseContext);
-  const { currentUser } = useContext(UserContext);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     const firestoreCall = Firebase.firestore()
@@ -43,7 +49,7 @@ export default function Feed() {
   } else
     return (
       <Container className={classes.flexContainer}>
-        <div style={{ width: "100%" }}>
+        <div className={classes.btnContainer}>
           <PostUpload postID={uuidv4()} />
         </div>
         <Container maxWidth='sm' disableGutters>

@@ -21,9 +21,6 @@ const useStyles = makeStyles((theme) => ({
   formItem: {
     padding: "10px 20px 10px 20px",
   },
-  newPostButton: {
-    borderRadius: "2em",
-  },
 }));
 
 export default function PostUpload({ postID }) {
@@ -94,6 +91,7 @@ export default function PostUpload({ postID }) {
       imageURL: imageURL.URL,
       caption: data.caption,
       description: data.description,
+      avatarPhotoURL: currentUser.photoURL,
     };
     Firebase.addPost(postID, postData)
       .then(() => enqueueSnackbar("Post Uploaded!"))
@@ -177,7 +175,6 @@ export default function PostUpload({ postID }) {
         variant='contained'
         onClick={handleClickOpen}
         startIcon={<AddIcon />}
-        className={classes.newPostButton}
       >
         Add new Post
       </Button>
