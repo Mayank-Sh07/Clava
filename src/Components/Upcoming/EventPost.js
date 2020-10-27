@@ -11,9 +11,10 @@ import {
   CardActions,
   Collapse,
   Typography,
+  Button,
 } from "@material-ui/core";
 import { ExpandIcon } from "../Icons";
-import PostMenu from "./PostMenu";
+import EditEvent from "./EditEvent";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -21,12 +22,12 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     width: "100%",
-    height: 550,
+    height: 850,
     [theme.breakpoints.only("sm")]: {
-      height: 450,
+      height: 650,
     },
     [theme.breakpoints.only("xs")]: {
-      height: 300,
+      height: 350,
     },
     objectFit: "cover",
     objectPosition: "50% 30%",
@@ -43,32 +44,46 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Post({ post, isUserPost }) {
+export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  const addEventToCalendar = () => {
+    currentUser.userDoc
+      .collection("userEvents")
+      .doc(eventPost.id)
+      .set(eventPost.eventData)
+      .then(() => enqueueSnackbar("Event successfully added!"))
+      .catch(() => enqueueSnackbar("Error while linking Event to user"));
+  };
+
   return (
     <Card className={classes.card}>
       <CardHeader
-        avatar={<Avatar className={classes.avatar}>{post.userName}</Avatar>}
-        action={isUserPost ? <PostMenu post={post} /> : <></>}
-        title={post.userName}
-        subheader={post.date}
+        avatar={
+          <Avatar className={classes.avatar}>{eventPost.userName}</Avatar>
+        }
+        title={eventPost.userName}
+        subheader={eventPost.date}
+        action={<EditEvent Event={eventPost.eventData} />}
       />
       <CardMedia
         component='img'
         className={classes.media}
-        src={post.imageURL}
+        src={eventPost.imageURL}
       />
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
-          {post.caption}
+          {eventPost.eventData.title}
         </Typography>
       </CardContent>
 
       <CardActions disableSpacing>
+        <Button variant='contained' onClick={() => addEventToCalendar()}>
+          Add to Calendar
+        </Button>
         <IconButton
           className={clsx(classes.expand, {
             [classes.expandOpen]: expanded,
@@ -81,7 +96,9 @@ export default function Post({ post, isUserPost }) {
 
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent>
-          <Typography paragraph>{post.description}</Typography>
+          <Typography paragraph>
+            {eventPost.eventData.extendedProps.description}
+          </Typography>
         </CardContent>
       </Collapse>
     </Card>

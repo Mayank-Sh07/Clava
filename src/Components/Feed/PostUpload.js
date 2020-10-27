@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
-import { UserContext } from "./UserContextProvider";
-import { FirebaseContext } from "./init";
+import { UserContext, FirebaseContext } from "../Firebase";
+import { useSnackbar } from "notistack";
 import {
   TextField,
   Grid,
@@ -15,21 +15,25 @@ import {
   Box,
   LinearProgress,
 } from "@material-ui/core";
-import { CloseIcon } from "../Icons";
+import { CloseIcon, AddIcon } from "../Icons";
 
 const useStyles = makeStyles((theme) => ({
   formItem: {
     padding: "10px 20px 10px 20px",
+  },
+  newPostButton: {
+    borderRadius: "2em",
   },
 }));
 
 export default function PostUpload({ postID }) {
   const [open, setOpen] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [imageURL, setImageURL] = useState(null);
+  const [imageURL, setImageURL] = useState({ URL: null, hasDownloaded: false });
   const { register, handleSubmit } = useForm();
   const Firebase = useContext(FirebaseContext);
   const { currentUser } = useContext(UserContext);
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
 
   const handleClickOpen = () => {
@@ -56,6 +60,7 @@ export default function PostUpload({ postID }) {
       (error) => {
         //Error Handler
         console.log(error);
+        enqueueSnackbar("Error while Uploading, please try again.");
       },
       () => {
         //on Complete
@@ -64,9 +69,13 @@ export default function PostUpload({ postID }) {
           .child(postID)
           .getDownloadURL()
           .then((url) => {
-            setImageURL(url);
+            setImageURL({ URL: url, hasDownloaded: true });
+            enqueueSnackbar("Image uploaded Successfully!");
           })
-          .catch((err) => alert(err));
+          .catch((err) => {
+            console.log(err);
+            enqueueSnackbar("Image upload failed, please try again.");
+          });
       }
     );
   };
@@ -76,25 +85,26 @@ export default function PostUpload({ postID }) {
       id: postID,
       timestamp: Firebase.firestore.FieldValue.serverTimestamp(),
       userName: currentUser.firstName,
+      userId: currentUser.uid,
       date: new Intl.DateTimeFormat("en-US", {
         year: "numeric",
         month: "short",
         day: "2-digit",
       }).format(new Date()),
-      imageURL: imageURL,
+      imageURL: imageURL.URL,
       caption: data.caption,
       description: data.description,
     };
-    console.log(postData);
-    Firebase.firestore().collection("posts").doc(postData.id).set(postData);
-    currentUser.userDoc.update({
-      userPosts: Firebase.firestore.FieldValue.arrayUnion(postData.id),
-    });
+    Firebase.addPost(postID, postData)
+      .then(() => enqueueSnackbar("Post Uploaded!"))
+      .catch(() =>
+        enqueueSnackbar("Error while uploading Post, please try again.")
+      );
+    setImageURL({ URL: null, hasDownloaded: false });
     handleClose();
-    console.log("UPLOADED SUCCESSFULLY");
   }
 
-  const EventPost = () => {
+  const NewPost = () => {
     return (
       <form onSubmit={handleSubmit((data) => handleEventPostDetails(data))}>
         <Grid container alignItems='center' justify='space-evenly'>
@@ -102,7 +112,7 @@ export default function PostUpload({ postID }) {
             <TextField
               id='post-upload'
               name='image'
-              label='Event Poster'
+              label='Image'
               helperText='Select the image to be uploaded (required)'
               type='file'
               required
@@ -128,7 +138,7 @@ export default function PostUpload({ postID }) {
               id='post-caption'
               name='caption'
               label='Caption'
-              inputProps={{ maxLength: 55 }}
+              inputProps={{ maxLength: 300 }}
               helperText='Max 50 words'
               type='text'
               inputRef={register}
@@ -141,7 +151,7 @@ export default function PostUpload({ postID }) {
               id='post-description'
               name='description'
               label='Description'
-              helperText='Describe the Event'
+              helperText='Add a suitable description'
               type='text'
               inputRef={register}
               multiline
@@ -152,7 +162,9 @@ export default function PostUpload({ postID }) {
             />
           </Grid>
           <Grid item xs={12} className={classes.formItem} align='center'>
-            <Button type='submit'>SUBMIT</Button>
+            <Button type='submit' disabled={!imageURL.hasDownloaded}>
+              POST
+            </Button>
           </Grid>
         </Grid>
       </form>
@@ -161,12 +173,17 @@ export default function PostUpload({ postID }) {
 
   return (
     <>
-      <Button variant='contained' onClick={handleClickOpen}>
-        POST TO EVENTS
+      <Button
+        variant='contained'
+        onClick={handleClickOpen}
+        startIcon={<AddIcon />}
+        className={classes.newPostButton}
+      >
+        Add new Post
       </Button>
       <Dialog open={open} scroll={"paper"}>
         <Toolbar>
-          <Typography variant='h5'>Upload Post to Upcoming Events</Typography>
+          <Typography variant='h5'>Post to Clava's Feed</Typography>
           <div style={{ flexGrow: 1 }} />
           <IconButton
             onClick={() => {
@@ -176,7 +193,7 @@ export default function PostUpload({ postID }) {
             <CloseIcon />
           </IconButton>
         </Toolbar>
-        <DialogContent>{EventPost()}</DialogContent>
+        <DialogContent>{NewPost()}</DialogContent>
       </Dialog>
     </>
   );

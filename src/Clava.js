@@ -1,12 +1,14 @@
 import React from "react";
-import { Container } from "@material-ui/core";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
+import { PrivateRoute, UserContextProvider } from "./Components/Firebase";
+import { Container } from "@material-ui/core";
 import {
   Home,
   About,
   Gallery,
   Upcoming,
   Feed,
+  UserPosts,
   Blog,
   Calendar,
   Attendance,
@@ -15,7 +17,6 @@ import {
   Profile,
   Dashboard,
 } from "./Components";
-import { PrivateRoute, UserContextProvider } from "./Components/Firebase";
 
 function Clava() {
   console.log("clava render");
@@ -38,6 +39,7 @@ function Clava() {
               adminOnly
             />
             <PrivateRoute path='/Feed' exact component={Feed} />
+            <PrivateRoute path='/Posts' exact component={UserPosts} />
             <PrivateRoute path='/Blog' exact component={Blog} />
             <PrivateRoute path='/Calendar' exact component={Calendar} />
             <PrivateRoute

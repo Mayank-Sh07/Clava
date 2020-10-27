@@ -1,5 +1,6 @@
 import React from "react";
 import EditPost from "./EditPost";
+import { useSnackbar } from "notistack";
 import {
   IconButton,
   Menu,
@@ -18,6 +19,7 @@ export default function PostMenu({ post }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const Firebase = React.useContext(FirebaseContext);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -36,15 +38,10 @@ export default function PostMenu({ post }) {
     handleClose();
   };
 
-  const deletePost = (id, url) => {
-    Firebase.firestore().collection("posts").doc(post.id).delete();
-
-    Firebase.storage()
-      .ref("Posts")
-      .child(id)
-      .delete()
-      .then(() => alert("deleteed from storage"))
-      .catch((err) => alert(err));
+  const deletePost = (id) => {
+    Firebase.deletePost(id)
+      .then(() => enqueueSnackbar("Post Deleted Successfully!"))
+      .catch(() => enqueueSnackbar("Could not Delete Post, please try again"));
   };
 
   return (
@@ -81,11 +78,7 @@ export default function PostMenu({ post }) {
           <Button onClick={closeDeleteMenu} color='primary'>
             Disagree
           </Button>
-          <Button
-            onClick={() => deletePost(post.id, post.imageURL)}
-            color='primary'
-            autoFocus
-          >
+          <Button onClick={() => deletePost(post.id)} color='primary' autoFocus>
             Agree
           </Button>
         </DialogActions>

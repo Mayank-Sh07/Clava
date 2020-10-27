@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { FirebaseContext } from "../Firebase";
+import { useSnackbar } from "notistack";
 import {
   TextField,
   Grid,
@@ -35,6 +36,7 @@ export default function EditPost({ post, close }) {
   const [open, setOpen] = useState(false);
   const { register, handleSubmit } = useForm();
   const Firebase = useContext(FirebaseContext);
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
 
   const handleClickOpen = () => {
@@ -49,10 +51,10 @@ export default function EditPost({ post, close }) {
       caption: data.caption,
       description: data.description,
     };
-    console.log(newData);
-    Firebase.firestore().collection("posts").doc(post.id).update(newData);
+    Firebase.editPost(post.id, newData)
+      .then(() => enqueueSnackbar("Post Updated Successfully"))
+      .catch(() => enqueueSnackbar("Failed to Update Post, please try again"));
     handleClose();
-    console.log("UPDATED SUCCESSFULLY");
   }
 
   const EditPost = () => {

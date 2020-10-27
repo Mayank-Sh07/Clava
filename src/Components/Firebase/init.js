@@ -55,6 +55,28 @@ class Firebase {
     const addMember = this.functions.httpsCallable("promoteUser");
     addMember({ email: userEmail });
   };
+
+  addPost = (postId, postData) => {
+    return this.firestore().collection("posts").doc(postId).set(postData);
+  };
+
+  editPost = (postId, newPostData) => {
+    return this.firestore().collection("posts").doc(postId).update(newPostData);
+  };
+
+  deletePost = (postId) => {
+    return this.firestore()
+      .collection("posts")
+      .doc(postId)
+      .delete()
+      .then(
+        this.storage()
+          .ref("Posts")
+          .child(postId)
+          .delete()
+          .then(console.log("image deleted successfully"))
+      );
+  };
 }
 
 export default Firebase;

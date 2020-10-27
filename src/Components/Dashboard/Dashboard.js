@@ -1,7 +1,8 @@
 import React from "react";
-import { Container, makeStyles, Typography } from "@material-ui/core";
+import { Container, makeStyles } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
-import PostUpload from "../Firebase/PostUpload";
+import EventUpload from "./EventUpload";
+import GalleryUpload from "./GalleryUpload";
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -9,7 +10,8 @@ export default function Dashboard() {
   const classes = useStyles();
   return (
     <Container>
-      <PostUpload postID={uuidv4()} />
+      <EventUpload eventID={uuidv4()} />
+      <GalleryUpload picID={uuidv4()} />
     </Container>
   );
 }

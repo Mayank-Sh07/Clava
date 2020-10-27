@@ -6,31 +6,59 @@
 5) refactoring code
  */
 
-import React, { useState, createRef } from "react";
+import React, { useState, useEffect, createRef, useContext } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { Container, Switch } from "@material-ui/core";
+import { UserContext, FirebaseContext } from "../Firebase";
+import { Container, makeStyles, Switch } from "@material-ui/core";
 import NewEventDialog from "./NewEventDialog";
 import EventClickMenu from "./EventClickMenu";
+import { useSnackbar } from "notistack";
+import "./fc-style-overrides.css";
+
+const useStyles = makeStyles((theme) => ({
+  calendarContainer: {
+    paddingTop: 20,
+    paddingBottom: 30,
+  },
+}));
 
 export default function Calendar() {
   const calendarRef = createRef();
+  const { currentUser } = useContext(UserContext);
+  const Firebase = useContext(FirebaseContext);
   const [showWeekends, toggleWeekends] = useState(true);
-  const [events, setEvents] = useState([
-    { title: "event 1", date: "2020-09-26" },
-  ]);
+  const [events, setEvents] = useState(null);
   const [selectInfo, setSelectInfo] = useState(null);
   const [eventInfo, setEventInfo] = useState(null);
-  console.log(events);
+  const { enqueueSnackbar } = useSnackbar();
+  const classes = useStyles();
+
+  useEffect(() => {
+    const firestoreCall = currentUser.userDoc
+      .collection("userEvents")
+      .onSnapshot(
+        (snapShot) => {
+          setEvents(snapShot.docs.map((doc) => doc.data()));
+        },
+        () => enqueueSnackbar("Unable to fetch Post data at the moment.")
+      );
+
+    return () => firestoreCall();
+  }, []);
 
   const handleEventChange = (currentEvents) => {
     setEvents(currentEvents.map((event) => event.toPlainObject()));
   };
 
+  if (events === null) {
+    return <h3>Loading...</h3>;
+  }
+
   return (
-    <Container maxWidth='md'>
+    <Container maxWidth='md' className={classes.calendarContainer}>
       <Switch
         checked={showWeekends}
         onChange={() => toggleWeekends(!showWeekends)}
@@ -48,6 +76,7 @@ export default function Calendar() {
         editable={false}
         selectable
         selectMirror
+        dayMaxEvents={1}
         initialEvents={events}
         eventsSet={handleEventChange}
         select={(info) =>
@@ -58,9 +87,16 @@ export default function Calendar() {
           })
         }
         eventClick={(info) => setEventInfo({ el: info.el, event: info.event })}
+        contentHeight='auto'
       />
       {!!selectInfo ? (
-        <NewEventDialog selectInfo={selectInfo} toggle={setSelectInfo} />
+        <NewEventDialog
+          selectInfo={selectInfo}
+          toggle={setSelectInfo}
+          currentUser={currentUser}
+          enqueueSnackbar={enqueueSnackbar}
+          Firebase={Firebase}
+        />
       ) : (
         <></>
       )}
@@ -69,6 +105,9 @@ export default function Calendar() {
           eventElem={eventInfo.el}
           Event={eventInfo.event}
           toggle={setEventInfo}
+          currentUser={currentUser}
+          enqueueSnackbar={enqueueSnackbar}
+          Firebase={Firebase}
         />
       ) : (
         <></>

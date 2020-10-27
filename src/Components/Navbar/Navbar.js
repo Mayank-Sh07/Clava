@@ -106,7 +106,6 @@ export default function Navbar(props) {
   const isDark = Boolean(currentTheme === "dark");
   const [anchor, setAnchor] = React.useState(false);
   const [value, setValue] = React.useState(undefined);
-  console.log(currentUser);
   const menuTabs = [
     { tag: "Home", icon: <HomeIcon /> },
     { tag: "About", icon: <AboutIcon /> },
@@ -135,6 +134,10 @@ export default function Navbar(props) {
       >
         <LogoutIcon />
         <p> Logout</p>
+      </MenuItem>
+      <MenuItem onClick={() => handleMenuClick("/Posts")}>
+        <ProfileIcon />
+        <p>My Posts</p>
       </MenuItem>
     </Menu>
   );

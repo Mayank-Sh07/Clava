@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { FirebaseContext } from "../Firebase";
 import {
   Container,
   makeStyles,
@@ -9,8 +10,10 @@ import {
   useMediaQuery,
   useTheme,
   Typography,
+  Popover,
 } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   flexContainer: {
@@ -25,31 +28,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const tileData = [
-  {
-    img: "faces/card-profile1-square.jpg",
-    title: "TEST1",
-    author: "author",
-  },
-  {
-    img: "faces/card-profile2-square.jpg",
-    title: "Image2",
-    author: "author",
-  },
-  {
-    img: "faces/card-profile5-square.jpg",
-    title: "TEST3",
-    author: "author",
-  },
-  {
-    img: "faces/card-profile4-square.jpg",
-    title: "Image4",
-    author: "author",
-  },
-];
-
 export default function Gallery() {
   const theme = useTheme();
+  const [Pictures, setPictures] = useState(null);
+  const Firebase = useContext(FirebaseContext);
+  const { enqueueSnackbar } = useSnackbar();
   var xs = useMediaQuery(theme.breakpoints.only("xs"));
   var sm = useMediaQuery(theme.breakpoints.only("sm"));
   const responsiveCellHeight = () => {
@@ -57,20 +40,38 @@ export default function Gallery() {
     else if (sm) return 250;
     else return 350;
   };
+
+  useEffect(() => {
+    Firebase.firestore()
+      .collection("gallery")
+      .onSnapshot(
+        (snapShot) => {
+          setPictures(snapShot.docs.map((doc) => doc.data()));
+        },
+        () => enqueueSnackbar("Unable to fetch Post data at the moment.")
+      );
+  }, []);
+
   const classes = useStyles();
+  console.log(Pictures);
+
+  if (Pictures === null) {
+    return <h3>Loading...</h3>;
+  }
+
   return (
     <Container className={classes.flexContainer}>
       <GridList cellHeight={responsiveCellHeight()} cols={3} spacing={8}>
         <GridListTile cols={3} style={{ height: "auto", textAlign: "center" }}>
           <Typography variant='h3'>December</Typography>
         </GridListTile>
-        {tileData.map((tile) => (
+        {Pictures.map((pic) => (
           <GridListTile classes={{ tile: classes.rounded }}>
-            <img src={tile.img} alt={tile.title} />
+            <img src={pic.imageURL} alt={pic.title} />
             <GridListTileBar
-              title={tile.title}
+              title={pic.title}
               subtitle={
-                <Typography variant='caption'>by: {tile.author}</Typography>
+                <Typography variant='caption'>pc: {pic.userName}</Typography>
               }
               actionIcon={
                 <IconButton className={classes.icon}>

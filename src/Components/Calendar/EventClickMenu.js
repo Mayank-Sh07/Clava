@@ -26,7 +26,13 @@ const useStyles = makeStyles({
   },
 });
 
-export default function EventClickMenu({ toggle, eventElem, Event }) {
+export default function EventClickMenu({
+  toggle,
+  eventElem,
+  Event,
+  currentUser,
+  enqueueSnackbar,
+}) {
   const [tabVal, setTabVal] = useState(0);
   const open = Boolean(eventElem);
   const classes = useStyles();
@@ -48,24 +54,29 @@ export default function EventClickMenu({ toggle, eventElem, Event }) {
     }`;
   };
 
-  const getDate = (dateStr, isEnd) => {
+  const getLongDate = (dateStr) => {
     const options = {
       weekday: "short",
       day: "numeric",
       month: "long",
       year: "numeric",
     };
-    let date = new Date(dateStr);
-    if (isEnd) {
-      date.setDate(date.getDate() - 1);
-    }
-    return date.toLocaleDateString(undefined, options);
+    return new Date(dateStr).toLocaleDateString(undefined, options);
   };
 
-  const toProperCase = (string) => {
-    return string.replace(/\w\S*/g, function (txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
+  const deleteEvent = (Event) => {
+    currentUser.userDoc
+      .collection("userEvents")
+      .doc(Event.id)
+      .delete()
+      .then(() => {
+        Event.remove();
+        enqueueSnackbar("Event deleted successfully!");
+      })
+      .catch(() =>
+        enqueueSnackbar("Error while deleting Event, please try again.")
+      );
+    handleMenuClose();
   };
 
   return (
@@ -83,10 +94,10 @@ export default function EventClickMenu({ toggle, eventElem, Event }) {
       <DialogContent>
         <TabPanel value={tabVal} index={0}>
           <EventDetails
-            title={toProperCase(Event.title)}
+            title={Event.title}
             description={Event.extendedProps.description}
-            startDate={getDate(Event.extendedProps.eventStart, false)}
-            endDate={getDate(Event.extendedProps.eventEnd, true)}
+            startDate={getLongDate(Event.extendedProps.eventStart)}
+            endDate={getLongDate(Event.extendedProps.eventEnd)}
             startTime={getTime(Event.start)}
             endTime={getTime(Event.end)}
           />
@@ -106,8 +117,7 @@ export default function EventClickMenu({ toggle, eventElem, Event }) {
             <Button
               fullWidth
               onClick={() => {
-                Event.remove();
-                handleMenuClose();
+                deleteEvent(Event);
               }}
             >
               DELETE

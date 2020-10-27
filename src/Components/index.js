@@ -3,6 +3,7 @@ import About from "./About/About";
 import Gallery from "./Gallery/Gallery";
 import Upcoming from "./Upcoming/Upcoming";
 import Feed from "./Feed/Feed";
+import UserPosts from "./Feed/UserPosts";
 import Blog from "./Blog/Blog";
 import Calendar from "./Calendar/Calendar";
 import Attendance from "./Attendance/Attendance";
@@ -24,4 +25,5 @@ export {
   Navbar,
   Profile,
   Dashboard,
+  UserPosts,
 };

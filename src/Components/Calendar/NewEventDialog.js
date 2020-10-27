@@ -19,7 +19,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NewEventDialog({ toggle, selectInfo }) {
+export default function NewEventDialog({
+  toggle,
+  selectInfo,
+  currentUser,
+  enqueueSnackbar,
+}) {
   const { register, handleSubmit } = useForm();
   const [open, setOpen] = useState(true);
   const classes = useStyles();
@@ -28,28 +33,43 @@ export default function NewEventDialog({ toggle, selectInfo }) {
     toggle(null);
   };
 
+  const toProperCase = (string) => {
+    return string.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  };
+
+  const uploadUserEvent = (eventData) => {
+    currentUser.userDoc
+      .collection("userEvents")
+      .doc(eventData.id)
+      .set(eventData)
+      .then(() => enqueueSnackbar("Event successfully added!"))
+      .catch(() => enqueueSnackbar("Error while linking Event to user"));
+  };
+
+  const alterDate = (date, op) => {
+    date.setDate(date.getDate() + Number(op));
+    return date.toISOString().substr(0, 10);
+  };
+
   const handleEventDetails = (data) => {
-    selectInfo.calendar.addEvent({
+    const eventData = {
       id: uuidv4(),
       startRecur: selectInfo.start,
       endRecur: selectInfo.end,
       extendedProps: {
         eventStart: selectInfo.start,
-        eventEnd: selectInfo.end,
+        eventEnd: alterDate(new Date(selectInfo.end), -1),
         description: data.description,
       },
       startTime: data.startTime,
       endTime: data.endTime,
-      title: data.title,
-    });
-    console.log([
-      data.title,
-      data.description,
-      selectInfo.start,
-      selectInfo.end,
-      data.startTime,
-      data.endTime,
-    ]);
+      title: toProperCase(data.title),
+    };
+    selectInfo.calendar.addEvent(eventData);
+    console.log(eventData);
+    uploadUserEvent(eventData);
     toggle(null);
   };
 
