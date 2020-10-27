@@ -6,6 +6,7 @@ import GalleryUpload from "./GalleryUpload";
 import { FirebaseContext, UserContext } from "../Firebase";
 import UserGrid from "./UserGrid";
 import EventGrid from "./EventGrid";
+import Loading from "../Loading";
 
 const useStyles = makeStyles((theme) => ({
   btnContainer: {
@@ -67,7 +68,7 @@ export default function Dashboard() {
 
   console.log(usersData);
 
-  if (usersData === null || eventsData === null) return <h3>Loading...</h3>;
+  if (usersData === null || eventsData === null) return <Loading />;
   return (
     <Container>
       <br />

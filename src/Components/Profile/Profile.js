@@ -12,6 +12,7 @@ import {
 import { UserContext, FirebaseContext } from "../Firebase";
 import ProfileCard from "./ProfileCard";
 import MyEventsGrid from "./MyEventsGrid";
+import Loading from "../Loading";
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -66,7 +67,7 @@ export default function Profile() {
     }
   };
 
-  if (events === null) return <h3>Loading...</h3>;
+  if (events === null) return <Loading />;
 
   return (
     <Container style={{ marginTop: "70px" }}>

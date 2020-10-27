@@ -17,6 +17,7 @@ import NewEventDialog from "./NewEventDialog";
 import EventClickMenu from "./EventClickMenu";
 import { useSnackbar } from "notistack";
 import "./fc-style-overrides.css";
+import Loading from "../Loading/index";
 
 const useStyles = makeStyles((theme) => ({
   calendarContainer: {
@@ -54,7 +55,7 @@ export default function Calendar() {
   };
 
   if (events === null) {
-    return <h3>Loading...</h3>;
+    return <Loading />;
   }
 
   return (

@@ -3,6 +3,7 @@ import { Container, makeStyles } from "@material-ui/core";
 import { FirebaseContext, UserContext } from "../Firebase";
 import EventPost from "./EventPost";
 import { useSnackbar } from "notistack";
+import Loading from "../Loading";
 
 const useStyles = makeStyles((theme) => ({
   flexContainer: {
@@ -40,7 +41,7 @@ export default function Upcoming() {
   const classes = useStyles();
 
   if (Events === null) {
-    return <h3>Loading...</h3>;
+    return <Loading />;
   }
 
   return (

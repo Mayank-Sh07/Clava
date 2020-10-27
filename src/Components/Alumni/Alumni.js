@@ -64,6 +64,7 @@ const useStyles = makeStyles((theme) => ({
   main: {
     position: "relative",
     zIndex: "3",
+    backgroundColor: "#1e1e1e",
   },
   mainRaised: {
     margin: "-60px 20px 0px",
@@ -75,7 +76,7 @@ export default function Home(props) {
   const classes = useStyles();
   return (
     <>
-      <Parallax filter image={require("../Utils/alumniBg.png")}>
+      <Parallax filter image={require("../Images/stars.svg")}>
         <div className={classes.container}>
           <Grid container className={classes.grid} justify='center'>
             <Grid
@@ -87,7 +88,7 @@ export default function Home(props) {
               style={{ textAlign: "center" }}
             >
               <Typography variant='h1' className={classes.title}>
-                Club Alumni
+                Alumni
               </Typography>
             </Grid>
           </Grid>

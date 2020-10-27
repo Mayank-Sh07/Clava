@@ -11,14 +11,12 @@ import { ProfileIcon } from "../../Icons";
 
 const useStyles = makeStyles(({ palette, breakpoints, spacing }) => ({
   root: {
-    // a must if you want to set arrows, indicator as absolute
     position: "relative",
     width: "100%",
   },
   slide: {
-    perspective: 1000, // create perspective
+    perspective: 1000,
     overflow: "hidden",
-    // relative is a must if you want to create overlapping layers in children
     position: "relative",
     paddingTop: spacing(8),
     [breakpoints.up("sm")]: {
@@ -92,7 +90,7 @@ const useStyles = makeStyles(({ palette, breakpoints, spacing }) => ({
     left: "20%",
     height: "40%",
     zIndex: 1,
-    background: "linear-gradient(0deg, rgba(255,255,255,0) 0%, #070E38 100%)",
+    background: `linear-gradient(0deg, rgba(255,255,255,0) 0%, ${palette.primary.main} 100%)`,
     [breakpoints.up("sm")]: {
       top: 40,
     },
@@ -105,7 +103,7 @@ const useStyles = makeStyles(({ palette, breakpoints, spacing }) => ({
     left: "0%",
     height: "52%",
     zIndex: 2,
-    background: "linear-gradient(0deg, rgba(255,255,255,0) 0%, #070E38 100%)",
+    background: `linear-gradient(0deg, rgba(255,255,255,0) 0%, ${palette.primary.main} 100%)`,
     [breakpoints.up("sm")]: {
       top: 112,
       left: "6%",
@@ -137,23 +135,23 @@ const ParallaxCarousel = () => {
   const data = [
     {
       id: 1,
-      title: "SAFE?",
+      title: "President",
       subtitle:
-        "Secured by Google Authentication, Expaflow ensures that your data is safe and secure!",
+        "A Hardworker with great Ambition! leading the way with Innovation",
       image: <ProfileIcon color='primary' className={classes.image} />,
     },
     {
       id: 2,
-      title: "FAST?",
+      title: "Faculty",
       subtitle:
-        "Running an optimized 'shortest path cash flow' algorithm under the hood, It's guaranteed to be FAST!",
+        "The Pillar of Support! a Role Model for all members of the club",
       image: <ProfileIcon color='primary' className={classes.image} />,
     },
     {
       id: 3,
-      title: "GOOD?",
+      title: "Treasurer",
       subtitle:
-        "A fully Responsive mobile-first web application which supports devices with various screen sizes!",
+        "Smart and Efficient, truly amazing with the numbers and monitization",
       image: <ProfileIcon color='primary' className={classes.image} />,
     },
   ];

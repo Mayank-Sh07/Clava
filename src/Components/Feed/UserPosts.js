@@ -3,6 +3,7 @@ import { FirebaseContext, UserContext } from "../Firebase";
 import Post from "./Post";
 import { useSnackbar } from "notistack";
 import { Container, makeStyles } from "@material-ui/core";
+import Loading from "../Loading";
 
 const useStyles = makeStyles((theme) => ({
   flexContainer: {
@@ -39,7 +40,7 @@ export default function UserPosts() {
   }, []);
   const classes = useStyles();
   if (pending) {
-    return <h3>Loading...</h3>;
+    return <Loading />;
   } else
     return (
       <Container className={classes.flexContainer}>

@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import InfoIcon from "@material-ui/icons/Info";
 import { useSnackbar } from "notistack";
+import Loading from "../Loading";
 
 const useStyles = makeStyles((theme) => ({
   flexContainer: {
@@ -56,15 +57,12 @@ export default function Gallery() {
   console.log(Pictures);
 
   if (Pictures === null) {
-    return <h3>Loading...</h3>;
+    return <Loading />;
   }
 
   return (
     <Container className={classes.flexContainer}>
       <GridList cellHeight={responsiveCellHeight()} cols={3} spacing={8}>
-        <GridListTile cols={3} style={{ height: "auto", textAlign: "center" }}>
-          <Typography variant='h3'>December</Typography>
-        </GridListTile>
         {Pictures.map((pic) => (
           <GridListTile classes={{ tile: classes.rounded }}>
             <img src={pic.imageURL} alt={pic.title} />

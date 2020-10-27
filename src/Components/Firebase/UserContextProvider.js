@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { FirebaseContext } from "./init";
+import Loading from "../Loading";
 
 export const UserContext = React.createContext(null);
 
@@ -52,7 +53,7 @@ const UserContextProvider = ({ children }) => {
   }, [Firebase]);
 
   if (pending) {
-    return <>Loading...</>;
+    return <Loading />;
   } else
     return (
       <UserContext.Provider value={{ currentUser }}>
