@@ -21,7 +21,7 @@ import {
 function Clava() {
   console.log("clava render");
   return (
-    <Container disableGutters>
+    <Container disableGutters maxWidth={false}>
       <UserContextProvider>
         <BrowserRouter>
           <Navbar />
