@@ -42,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
   expandOpen: {
     transform: "rotate(180deg)",
   },
+  large: {
+    width: theme.spacing(9),
+    height: theme.spacing(9),
+  },
 }));
 
 export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
@@ -63,9 +67,16 @@ export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
     <Card className={classes.card}>
       <CardHeader
         avatar={
-          <Avatar className={classes.avatar}>{eventPost.userName}</Avatar>
+          <Avatar
+            className={clsx(classes.avatar, classes.large)}
+            src={currentUser.photoURL}
+          >
+            {/* {eventPost.userName} */}
+          </Avatar>
         }
         title={eventPost.userName}
+        titleTypographyProps={{ variant: "h5" }}
+        subheaderTypographyProps={{ variant: "body2" }}
         subheader={eventPost.date}
         action={<EditEvent Event={eventPost.eventData} />}
       />
@@ -75,7 +86,7 @@ export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
         src={eventPost.imageURL}
       />
       <CardContent>
-        <Typography variant='body2' color='textSecondary' component='p'>
+        <Typography variant='h3' align='center' color='textSecondary'>
           {eventPost.eventData.title}
         </Typography>
       </CardContent>
@@ -96,7 +107,7 @@ export default function EventPost({ eventPost, currentUser, enqueueSnackbar }) {
 
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent>
-          <Typography paragraph>
+          <Typography variant='h6' paragraph>
             {eventPost.eventData.extendedProps.description}
           </Typography>
         </CardContent>
