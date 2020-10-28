@@ -30,7 +30,7 @@ function Clava() {
             <Route path='/About' exact component={About} />
             <Route path='/Gallery' exact component={Gallery} />
             <Route path='/Upcoming' exact component={Upcoming} />
-            <Route path='/Alumni' exact component={Alumni} />
+            <Route path='/Heads' exact component={Alumni} />
             <PrivateRoute
               path='/Dashboard'
               exact

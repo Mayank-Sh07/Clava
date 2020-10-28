@@ -1,5 +1,6 @@
 export default ({ breakpoints }) => ({
   root: {
+    color: "black",
     borderRadius: "50%",
     border: "1px solid",
     width: 40,

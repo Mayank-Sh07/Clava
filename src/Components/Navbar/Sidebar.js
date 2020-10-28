@@ -75,7 +75,7 @@ export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
     if (currentUser === null) {
       return [
         { icon: <EventsIcon />, tag: "Upcoming" },
-        { icon: <AlumniIcon />, tag: "Alumni" },
+        { icon: <AlumniIcon />, tag: "Heads" },
       ];
     } else if (currentUser.isAdmin) {
       return [
@@ -83,20 +83,20 @@ export default function SideDrawer({ handleMenuClick, currentUser, Firebase }) {
         { icon: <EventsIcon />, tag: "Upcoming" },
         { icon: <FeedIcon />, tag: "Feed" },
         { icon: <CalendarIcon />, tag: "Calendar" },
-        { icon: <AlumniIcon />, tag: "Alumni" },
+        { icon: <AlumniIcon />, tag: "Heads" },
       ];
     } else if (currentUser.isMember) {
       return [
         { icon: <EventsIcon />, tag: "Upcoming" },
         { icon: <FeedIcon />, tag: "Feed" },
         { icon: <CalendarIcon />, tag: "Calendar" },
-        { icon: <AlumniIcon />, tag: "Alumni" },
+        { icon: <AlumniIcon />, tag: "Heads" },
       ];
     } else
       return [
         { icon: <EventsIcon />, tag: "Upcoming" },
         { icon: <CalendarIcon />, tag: "Calendar" },
-        { icon: <AlumniIcon />, tag: "Alumni" },
+        { icon: <AlumniIcon />, tag: "Heads" },
       ];
   };
 

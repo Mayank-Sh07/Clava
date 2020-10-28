@@ -88,7 +88,7 @@ export default function Home(props) {
               style={{ textAlign: "center" }}
             >
               <Typography variant='h1' className={classes.title}>
-                Alumni
+                Heads
               </Typography>
             </Grid>
           </Grid>

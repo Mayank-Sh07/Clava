@@ -197,9 +197,9 @@ export default function Navbar(props) {
                 />
               ))}
             </Tabs>
-            <IconButton color='inherit' className={classes.menuSpacing}>
+            {/* <IconButton color='inherit' className={classes.menuSpacing}>
               <NotificationsIcon />
-            </IconButton>
+            </IconButton> */}
             <IconButton
               color='inherit'
               className={classes.menuSpacing}
